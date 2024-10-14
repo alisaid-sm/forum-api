@@ -4,8 +4,8 @@ describe("a AddThread entities", () => {
   it("should throw error when payload did not contain needed property", () => {
     // Arrange
     const payload = {
-      title: "Test",
-      body: "Test aja",
+      owner: "user-1",
+      title: "test",
     };
 
     // Action and Assert
@@ -17,11 +17,9 @@ describe("a AddThread entities", () => {
   it("should throw error when payload did not meet data type specification", () => {
     // Arrange
     const payload = {
-      id: 123,
-      owner: "ali",
-      title: {},
-      body: {},
-      date: {},
+      owner: "user-1",
+      title: "test",
+      body: true,
     };
 
     // Action and Assert
@@ -33,21 +31,17 @@ describe("a AddThread entities", () => {
   it("should create addThread object correctly", () => {
     // Arrange
     const payload = {
-      id: "thread-pertama",
-      owner: "ali",
-      title: "Test",
-      body: "Test Aja",
-      date: new Date(),
+      owner: "user-1",
+      title: "test",
+      body: "test aja",
     };
 
     // Action
-    const addedThread = new AddThread(payload);
+    const { owner, title, body } = new AddThread(payload);
 
     // Assert
-    expect(addedThread.id).toEqual(payload.id);
-    expect(addedThread.owner).toEqual(payload.owner);
-    expect(addedThread.title).toEqual(payload.title);
-    expect(addedThread.body).toEqual(payload.body);
-    expect(addedThread.data).toEqual(payload.data);
+    expect(owner).toEqual(payload.owner);
+    expect(title).toEqual(payload.title);
+    expect(body).toEqual(payload.body);
   });
 });

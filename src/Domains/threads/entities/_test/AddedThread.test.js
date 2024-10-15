@@ -20,8 +20,6 @@ describe("a AddedThread entities", () => {
       id: 123,
       owner: "ali",
       title: {},
-      body: {},
-      date: {},
     };
 
     // Action and Assert
@@ -36,8 +34,6 @@ describe("a AddedThread entities", () => {
       id: "thread-pertama",
       owner: "ali",
       title: "Test",
-      body: "Test Aja",
-      date: new Date(),
     };
 
     // Action
@@ -47,7 +43,5 @@ describe("a AddedThread entities", () => {
     expect(addedThread.id).toEqual(payload.id);
     expect(addedThread.owner).toEqual(payload.owner);
     expect(addedThread.title).toEqual(payload.title);
-    expect(addedThread.body).toEqual(payload.body);
-    expect(addedThread.date).toEqual(payload.date);
   });
 });

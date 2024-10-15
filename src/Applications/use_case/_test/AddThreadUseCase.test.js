@@ -19,8 +19,6 @@ describe("AddThreadUseCase", () => {
       id: "thread-123",
       owner: useCasePayload.owner,
       title: useCasePayload.title,
-      body: useCasePayload.body,
-      date: new Date(),
     });
 
     const mockThreadRepository = new ThreadRepository();
@@ -39,7 +37,11 @@ describe("AddThreadUseCase", () => {
 
     // Assert
     expect(addedThread).toStrictEqual(
-      new AddedThread(mockAddedThread)
+      new AddedThread({
+        id: "thread-123",
+        owner: useCasePayload.owner,
+        title: useCasePayload.title,
+      })
     );
     expect(mockThreadRepository.addThread).toHaveBeenCalledWith(
       new AddThread({

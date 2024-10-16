@@ -6,6 +6,7 @@ const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTrans
 const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 const config = require('../../Commons/config');
+const threads = require('../../Interfaces/http/api/threads');
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -44,6 +45,10 @@ const createServer = async (container) => {
       plugin: authentications,
       options: { container },
     },
+    {
+      plugin: threads,
+      options: { container },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -68,6 +73,8 @@ const createServer = async (container) => {
       if (!translatedError.isServer) {
         return h.continue;
       }
+
+      console.log(response);
 
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({

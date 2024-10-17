@@ -21,6 +21,10 @@ exports.up = (pgm) => {
       notNull: true,
       default: pgm.func("current_timestamp"),
     },
+    is_delete: {
+      type: "BOOLEAN",
+      default: false,
+    }
   });
 
   pgm.addConstraint(

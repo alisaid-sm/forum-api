@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 const dotenv = require("dotenv");
 const path = require("path");
 

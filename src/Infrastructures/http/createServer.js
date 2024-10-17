@@ -10,8 +10,9 @@ const threads = require('../../Interfaces/http/api/threads');
 
 const createServer = async (container) => {
   const server = Hapi.server({
-    host: process.env.HOST,
-    port: process.env.PORT,
+    host: config.app.host,
+    port: config.app.port,
+    debug: config.app.debug
   });
 
   await server.register([
@@ -74,7 +75,7 @@ const createServer = async (container) => {
         return h.continue;
       }
 
-      console.log(response);
+      //console.log(response);
 
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({

@@ -29,7 +29,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      await threadRepositoryPostgres.addUser(addThread);
+      await threadRepositoryPostgres.addThread(addThread);
 
       // Assert
       const threads = await ThreadsTableTestHelper.findThreadsById('thread-123');
@@ -49,7 +49,7 @@ describe('ThreadRepositoryPostgres', () => {
       const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
-      const addedThread = await threadRepositoryPostgres.addUser(addThread);
+      const addedThread = await threadRepositoryPostgres.addThread(addThread);
 
       // Assert
       expect(addedThread).toStrictEqual(new AddedThread({

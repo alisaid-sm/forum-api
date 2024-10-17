@@ -13,6 +13,7 @@ class ThreadsHandler {
     request.payload.owner = credentialId;
 
     const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
+
     const addedThread = await addThreadUseCase.execute(request.payload);
 
     const response = h.response({

@@ -8,6 +8,7 @@
 5. create feature inteface http. route and handler of http request
 6. Register interface http to http server
 7. Register real repository and usecase in container (Dependency Injection)
+8. Register domain error to domain error translator
 
 ### TDD
 Every step in Flow Coding must begin with writing their unit test ...

@@ -2,6 +2,20 @@
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {
+  async addComment({
+    id = "comment-123",
+    owner = "user-123",
+    thread = "thread-123",
+    content = "test aja",
+  }) {
+    const query = {
+      text: "INSERT INTO comments VALUES($1, $2, $3, $4)",
+      values: [id, owner, thread, content],
+    };
+
+    await pool.query(query);
+  },
+
   async findCommentsById(id) {
     const query = {
       text: 'SELECT * FROM comments WHERE id = $1',

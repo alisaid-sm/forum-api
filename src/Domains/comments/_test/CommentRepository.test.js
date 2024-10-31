@@ -32,4 +32,20 @@ describe('CommentRepository interface', () => {
     // Action and Assert
     await expect(commentRepository.verifyAvailableThread({})).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
+
+  it('should throw error when invoke abstract behavior verifyAvailableComment', async () => {
+    // Arrange
+    const commentRepository = new CommentRepository();
+
+    // Action and Assert
+    await expect(commentRepository.verifyAvailableComment({})).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  });
+
+  it('should throw error when invoke abstract behavior verifyCommentOwner', async () => {
+    // Arrange
+    const commentRepository = new CommentRepository();
+
+    // Action and Assert
+    await expect(commentRepository.verifyCommentOwner({})).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  });
 });

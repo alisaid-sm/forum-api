@@ -1,4 +1,5 @@
 const AddComment = require("../../Domains/comments/entities/AddComment");
+const DeleteComment = require("../../Domains/comments/entities/DeleteComment");
 
 class CommentUseCase {
   constructor({ commentRepository }) {
@@ -19,9 +20,12 @@ class CommentUseCase {
   }
 
   // a.k.a deleteCommentUseCase
-  deleteComment(useCasePayload) {
-    // const addComment = new AddComment(useCasePayload);
-    // return this._commentRepository.addComment(addComment);
+  async deleteComment(useCasePayload) {
+    const deleteComment = new DeleteComment(useCasePayload);
+    await this._commentRepository.verifyCommentOwner(deleteComment.owner);
+    await this._commentRepository.verifyAvailableThread(deleteComment.thread);
+    await this._commentRepository.verifyAvailableComment(deleteComment.comment);
+    return this._commentRepository.deleteComment(deleteComment);
   }
 }
 

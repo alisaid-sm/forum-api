@@ -27,6 +27,25 @@ class CommentsHandler {
     response.code(201);
     return response;
   }
+
+  async deleteCommentHandler(request, h) {
+    const { id: credentialId } = request.auth.credentials;
+    const { threadId, commentId } = request.params;
+
+    request.payload.owner = credentialId;
+    request.payload.thread = threadId;
+    request.payload.comment = commentId;
+
+    const CommentUseCase = this._container.getInstance(CommentUseCase.name);
+
+    await CommentUseCase.deleteComment(request.payload);
+
+    const response = h.response({
+      status: 'success',
+    });
+    response.code(200);
+    return response;
+  }
 }
 
 module.exports = CommentsHandler;

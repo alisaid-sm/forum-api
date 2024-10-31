@@ -8,7 +8,13 @@ class CommentRepository {
   async getComment(comment) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
-  async verifyAvailableThread(comment) {
+  async verifyAvailableThread(thread) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async verifyAvailableComment(comment) {
+    throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async verifyCommentOwner(comment) {
     throw new Error("COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

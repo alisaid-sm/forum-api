@@ -53,13 +53,13 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyCommentOwner(ownerId, commentId) {
     const query = {
-      text: 'SELECT id FROM comments WHERE id = $1',
+      text: 'SELECT * FROM comments WHERE id = $1',
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
-    if (result.rows[0].owner === ownerId) {
+    if (result.rows[0].owner !== ownerId) {
       throw new AuthorizationError('Hanya pemilik komentar yang dapat menghapus komentar');
     }
   }

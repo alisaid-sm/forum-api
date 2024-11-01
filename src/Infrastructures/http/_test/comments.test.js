@@ -14,22 +14,6 @@ describe("/threads/{threadId}/comments endpoint", () => {
     await pool.end();
   });
 
-  beforeAll(async () => {
-    await UsersTableTestHelper.addUser({ username: "dicoding" });
-    await ThreadsTableTestHelper.addThread({
-      owner: "user-123",
-      title: "test",
-      body: "test aja",
-    });
-    authenticationTokenManager = container.getInstance(
-      AuthenticationTokenManager.name
-    );
-    accessToken = await authenticationTokenManager.createAccessToken({
-      username: "dicoding",
-      id: "user-123",
-    });
-  });
-
   afterEach(async () => {
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
@@ -37,6 +21,22 @@ describe("/threads/{threadId}/comments endpoint", () => {
   });
 
   describe("when POST /threads/{threadId}/comments", () => {
+    beforeAll(async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      authenticationTokenManager = container.getInstance(
+        AuthenticationTokenManager.name
+      );
+      accessToken = await authenticationTokenManager.createAccessToken({
+        username: "dicoding",
+        id: "user-123",
+      });
+    });
+
     it("should response 201 and persisted comment", async () => {
       // Arrange
       const requestPayload = {
@@ -165,8 +165,22 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
   describe("when DELETE /threads/{threadId}/comments/{commentId}", () => {
     beforeAll(async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
       await CommentsTableTestHelper.addComment({
         id: "comment-123",
+      });
+
+      authenticationTokenManager = container.getInstance(
+        AuthenticationTokenManager.name
+      );
+      accessToken = await authenticationTokenManager.createAccessToken({
+        username: "dicoding",
+        id: "user-123",
       });
     });
 
@@ -221,7 +235,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
       // Action
       const response = await server.inject({
-        method: "POST",
+        method: "DELETE",
         url: "/threads/xxx/comments/comment-123",
         payload: requestPayload,
         headers: {
@@ -231,6 +245,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
+
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('thread tidak ditemukan');
@@ -244,7 +259,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
       // Action
       const response = await server.inject({
-        method: "POST",
+        method: "DELETE",
         url: "/threads/thread-123/comments/xxx",
         payload: requestPayload,
         headers: {
@@ -273,7 +288,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
       // Action
       const response = await server.inject({
-        method: "POST",
+        method: "DELETE",
         url: "/threads/thread-123/comments/comment-123",
         payload: requestPayload,
         headers: {

@@ -22,9 +22,9 @@ class CommentUseCase {
   // a.k.a deleteCommentUseCase
   async deleteComment(useCasePayload) {
     const deleteComment = new DeleteComment(useCasePayload);
-    await this._commentRepository.verifyCommentOwner(deleteComment.owner);
     await this._commentRepository.verifyAvailableThread(deleteComment.thread);
     await this._commentRepository.verifyAvailableComment(deleteComment.comment);
+    await this._commentRepository.verifyCommentOwner(deleteComment.owner, deleteComment.comment);
     return this._commentRepository.deleteComment(deleteComment);
   }
 }

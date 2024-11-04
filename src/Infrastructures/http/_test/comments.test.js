@@ -10,32 +10,36 @@ let accessToken;
 let authenticationTokenManager;
 
 describe("/threads/{threadId}/comments endpoint", () => {
+  beforeAll(async () => {
+    await UsersTableTestHelper.addUser({ username: "dicoding" });
+
+    authenticationTokenManager = container.getInstance(
+      AuthenticationTokenManager.name
+    );
+    accessToken = await authenticationTokenManager.createAccessToken({
+      username: "dicoding",
+      id: "user-123",
+    });
+  });
+
   afterAll(async () => {
+    await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 
   afterEach(async () => {
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
   });
 
   describe("when POST /threads/{threadId}/comments", () => {
-    beforeAll(async () => {
-      await UsersTableTestHelper.addUser({ username: "dicoding" });
+    beforeEach(async () => {
       await ThreadsTableTestHelper.addThread({
         owner: "user-123",
         title: "test",
         body: "test aja",
       });
-      authenticationTokenManager = container.getInstance(
-        AuthenticationTokenManager.name
-      );
-      accessToken = await authenticationTokenManager.createAccessToken({
-        username: "dicoding",
-        id: "user-123",
-      });
-    });
+    })
 
     it("should response 201 and persisted comment", async () => {
       // Arrange
@@ -164,8 +168,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
   });
 
   describe("when DELETE /threads/{threadId}/comments/{commentId}", () => {
-    beforeAll(async () => {
-      await UsersTableTestHelper.addUser({ username: "dicoding" });
+    beforeEach(async () => {
       await ThreadsTableTestHelper.addThread({
         owner: "user-123",
         title: "test",
@@ -174,15 +177,7 @@ describe("/threads/{threadId}/comments endpoint", () => {
       await CommentsTableTestHelper.addComment({
         id: "comment-123",
       });
-
-      authenticationTokenManager = container.getInstance(
-        AuthenticationTokenManager.name
-      );
-      accessToken = await authenticationTokenManager.createAccessToken({
-        username: "dicoding",
-        id: "user-123",
-      });
-    });
+    })
 
     it("should response 200 and soft deleted comment", async () => {
       // Arrange

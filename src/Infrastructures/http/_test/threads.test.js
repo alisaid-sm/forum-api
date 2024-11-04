@@ -9,6 +9,7 @@ let accessToken;
 
 describe("/threads endpoint", () => {
   afterAll(async () => {
+    await UsersTableTestHelper.cleanTable();
     await pool.end();
   });
 
@@ -25,7 +26,6 @@ describe("/threads endpoint", () => {
 
   afterEach(async () => {
     await ThreadsTableTestHelper.cleanTable();
-    await UsersTableTestHelper.cleanTable();
   });
 
   describe("when POST /threads", () => {

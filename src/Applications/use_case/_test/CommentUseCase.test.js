@@ -2,6 +2,8 @@ const CommentRepository = require("../../../Domains/comments/CommentRepository")
 const AddComment = require("../../../Domains/comments/entities/AddComment");
 const AddedComment = require("../../../Domains/comments/entities/AddedComment");
 const DeleteComment = require("../../../Domains/comments/entities/DeleteComment");
+const GetComment = require("../../../Domains/comments/entities/GetComment");
+const GotComment = require("../../../Domains/comments/entities/GotComment");
 const CommentUseCase = require("../CommentUseCase");
 
 describe("CommentUseCase", () => {
@@ -89,6 +91,55 @@ describe("CommentUseCase", () => {
     // Assert
     expect(mockCommentRepository.deleteComment).toHaveBeenCalledWith(
       new DeleteComment(useCasePayload)
+    );
+  });
+  it("should orchestrating the get comment action correctly", async () => {
+    // Arrange
+    const useCasePayload = {
+      thread: "thread-123",
+    };
+
+    const mockGotComment = new GotComment({
+      id: "thread-123",
+      title: "sebuah thread",
+      body: "sebuah body thread",
+      date: "2021-08-08T07:19:09.775Z",
+      username: "dicoding",
+      comments: [
+        {
+          id: "comment-_pby2_tmXV6bcvcdev8xk",
+          username: "johndoe",
+          date: "2021-08-08T07:22:33.555Z",
+          content: "sebuah comment",
+        },
+        {
+          id: "comment-yksuCoxM2s4MMrZJO-qVD",
+          username: "dicoding",
+          date: "2021-08-08T07:26:21.338Z",
+          content: "**komentar telah dihapus**",
+        },
+      ],
+    });
+
+    const mockCommentRepository = new CommentRepository();
+
+    mockCommentRepository.getComment = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve(mockGotComment));
+
+    /** creating use case instance */
+    const commentUseCase = new CommentUseCase({
+      commentRepository: mockCommentRepository,
+    });
+
+    // Action
+    const gotComment = await commentUseCase.getComment(useCasePayload);
+
+    // Assert
+    expect(gotComment).toStrictEqual(mockGotComment);
+
+    expect(mockCommentRepository.getComment).toHaveBeenCalledWith(
+      new GetComment(useCasePayload)
     );
   });
 });

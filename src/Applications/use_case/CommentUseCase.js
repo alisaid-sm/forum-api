@@ -1,6 +1,6 @@
 const AddComment = require("../../Domains/comments/entities/AddComment");
 const DeleteComment = require("../../Domains/comments/entities/DeleteComment");
-const GotComment = require("../../Domains/comments/entities/GotComment");
+const GetComment = require("../../Domains/comments/entities/GetComment");
 
 class CommentUseCase {
   constructor({ commentRepository }) {
@@ -15,9 +15,9 @@ class CommentUseCase {
   }
 
   // a.k.a getCommentUseCase
-  getComment(useCasePayload) {
-    const gotComment = new GotComment(useCasePayload);
-    return this._commentRepository.getComment(gotComment);
+  async getComment(useCasePayload) {
+    const getComment = new GetComment(useCasePayload);
+    return this._commentRepository.getComment(getComment);
   }
 
   // a.k.a deleteCommentUseCase

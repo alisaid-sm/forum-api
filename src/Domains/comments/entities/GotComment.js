@@ -21,23 +21,32 @@ class GotComment {
       typeof id !== "string" ||
       typeof title !== "string" ||
       typeof body !== "string" ||
-      typeof date !== "string" ||
+      typeof date !== "object" ||
       typeof username !== "string" ||
       typeof comments !== "object"
     ) {
       throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
 
-    for (let comment of comments) {
-      if (!comment.id || !comment.username || !comment.date || !comment.content) {
+    for (let i = 0; i < comments.length; i++) {
+      const cleanComment = {};
+
+      cleanComment.id = comments[i].id;
+      cleanComment.username = comments[i].username;
+      cleanComment.date = comments[i].date;
+      cleanComment.content = comments[i].content;
+
+      comments[i] = cleanComment;
+
+      if (!comments[i].id || !comments[i].username || !comments[i].date || !comments[i].content) {
         throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
       }
 
       if (
-        typeof comment.id !== "string" ||
-        typeof comment.username !== "string" ||
-        typeof comment.date !== "string" ||
-        typeof comment.content !== "string"
+        typeof comments[i].id !== "string" ||
+        typeof comments[i].username !== "string" ||
+        typeof comments[i].date !== "object" ||
+        typeof comments[i].content !== "string"
       ) {
         throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
       }

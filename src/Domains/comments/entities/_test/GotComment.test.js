@@ -51,19 +51,19 @@ describe("a GotComment entities", () => {
       id: "thread-123",
       title: "sebuah thread",
       body: "sebuah body thread",
-      date: "2021-08-08T07:19:09.775Z",
+      date: new Date(),
       username: "dicoding",
       comments: [
         {
           id: "comment-_pby2_tmXV6bcvcdev8xk",
           username: "johndoe",
-          date: "2021-08-08T07:22:33.555Z",
+          date: new Date(),
           content: "sebuah comment",
         },
         {
           id: "comment-yksuCoxM2s4MMrZJO-qVD",
           username: "dicoding",
-          date: "2021-08-08T07:26:21.338Z",
+          date: new Date(),
           content: "**komentar telah dihapus**",
         },
       ],

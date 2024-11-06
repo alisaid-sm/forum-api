@@ -28,40 +28,42 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async verifyAvailableThread(threadId) {
     const query = {
-      text: 'SELECT id FROM threads WHERE id = $1',
+      text: "SELECT id FROM threads WHERE id = $1",
       values: [threadId],
     };
 
     const result = await this._pool.query(query);
 
     if (result.rowCount <= 0) {
-      throw new NotFoundError('thread tidak ditemukan');
+      throw new NotFoundError("thread tidak ditemukan");
     }
   }
 
   async verifyAvailableComment(commentId) {
     const query = {
-      text: 'SELECT id FROM comments WHERE id = $1',
+      text: "SELECT id FROM comments WHERE id = $1",
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
     if (result.rowCount <= 0) {
-      throw new NotFoundError('comment tidak ditemukan');
+      throw new NotFoundError("comment tidak ditemukan");
     }
   }
 
   async verifyCommentOwner(ownerId, commentId) {
     const query = {
-      text: 'SELECT * FROM comments WHERE id = $1',
+      text: "SELECT * FROM comments WHERE id = $1",
       values: [commentId],
     };
 
     const result = await this._pool.query(query);
 
     if (result.rows[0].owner !== ownerId) {
-      throw new AuthorizationError('Hanya pemilik komentar yang dapat menghapus komentar');
+      throw new AuthorizationError(
+        "Hanya pemilik komentar yang dapat menghapus komentar"
+      );
     }
   }
 
@@ -78,18 +80,24 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getComment(getComment) {
     const queryThread = {
-      text: 'SELECT "threads"."id", "threads"."title", "threads"."body", "users"."username" FROM "threads" INNER JOIN "users" ON "threads"."owner" = "users"."id" where "id" = $1',
+      text: 'SELECT "threads"."id", "threads"."title", "threads"."body", "threads"."date", "users"."username" FROM "threads" INNER JOIN "users" ON "threads"."owner" = "users"."id" WHERE "threads"."id" = $1',
       values: [getComment.thread],
     };
 
     const resultThread = await this._pool.query(queryThread);
 
     const queryComments = {
-      text: 'SELECT * FROM comments WHERE thread = $1 ORDER BY "date" asc',
+      text: 'SELECT "comments"."id", "users"."username", "comments"."date", "comments"."content", "comments"."is_delete" FROM comments INNER JOIN "users" ON "comments"."owner" = "users"."id" WHERE "comments"."thread" = $1 ORDER BY "date" asc',
       values: [getComment.thread],
     };
 
     const resultComment = await this._pool.query(queryComments);
+
+    for (let i = 0; i < resultComment.rows.length; i++) {
+      if (resultComment.rows[i].is_delete) {
+        resultComment.rows[i].content = "**komentar telah dihapus**";
+      }
+    }
 
     resultThread.rows[0].comments = resultComment.rows;
 

@@ -17,6 +17,7 @@ class CommentUseCase {
   // a.k.a getCommentUseCase
   async getComment(useCasePayload) {
     const getComment = new GetComment(useCasePayload);
+    await this._commentRepository.verifyAvailableThread(getComment.thread);
     return this._commentRepository.getComment(getComment);
   }
 

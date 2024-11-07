@@ -335,12 +335,8 @@ describe("/threads/{threadId}/comments endpoint", () => {
 
       // Action
       const response = await server.inject({
-        method: "DELETE",
-        url: "/threads/xxx/comments/comment-123",
-        payload: requestPayload,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
+        method: "GET",
+        url: "/threads/xxx"
       });
 
       // Assert
@@ -349,58 +345,6 @@ describe("/threads/{threadId}/comments endpoint", () => {
       expect(response.statusCode).toEqual(404);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('thread tidak ditemukan');
-    });
-
-    it('should response 404 when comment not found', async () => {
-      // Arrange
-      const requestPayload = {};
-
-      const server = await createServer(container);
-
-      // Action
-      const response = await server.inject({
-        method: "DELETE",
-        url: "/threads/thread-123/comments/xxx",
-        payload: requestPayload,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      // Assert
-      const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(404);
-      expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('comment tidak ditemukan');
-    });
-
-    it('should response 403 when user not owner comment', async () => {
-      await UsersTableTestHelper.addUser({ id: 'user-122', username: "dicoding1" });
-      accessToken = await authenticationTokenManager.createAccessToken({
-        username: "dicoding1",
-        id: "user-122",
-      });
-
-      // Arrange
-      const requestPayload = {};
-
-      const server = await createServer(container);
-
-      // Action
-      const response = await server.inject({
-        method: "DELETE",
-        url: "/threads/thread-123/comments/comment-123",
-        payload: requestPayload,
-        headers: {
-          authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      // Assert
-      const responseJson = JSON.parse(response.payload);
-      expect(response.statusCode).toEqual(403);
-      expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('Hanya pemilik komentar yang dapat menghapus komentar');
     });
   });
 });

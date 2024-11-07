@@ -15,6 +15,34 @@ describe("a GotComment entities", () => {
     );
   });
 
+  it("should throw error when payload did not contain needed property in comments", () => {
+    // Arrange
+    const payload = {
+      id: "thread-123",
+      title: "sebuah thread",
+      body: "sebuah body thread",
+      date: new Date(),
+      username: "dicoding",
+      comments: [
+        {
+          id: "comment-_pby2_tmXV6bcvcdev8xk",
+          username: "johndoe",
+          date: new Date(),
+        },
+        {
+          id: "comment-_pby2_tmXV6bcvcdev8xk",
+          username: "dicoding",
+          date: new Date(),
+        },
+      ],
+    };
+
+    // Action and Assert
+    expect(() => new GotComment(payload)).toThrow(
+      "GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    );
+  });
+
   it("should throw error when payload did not meet data type specification", () => {
     // Arrange
     const payload = {
@@ -22,6 +50,36 @@ describe("a GotComment entities", () => {
       title: "sebuah thread",
       body: "sebuah body thread",
       date: "2021-08-08T07:19:09.775Z",
+      username: "dicoding",
+      comments: [
+        {
+          id: 1,
+          username: "johndoe",
+          date: "2021-08-08T07:22:33.555Z",
+          content: "sebuah comment",
+        },
+        {
+          id: 2,
+          username: "dicoding",
+          date: "2021-08-08T07:26:21.338Z",
+          content: "**komentar telah dihapus**",
+        },
+      ],
+    };
+
+    // Action and Assert
+    expect(() => new GotComment(payload)).toThrow(
+      "GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    );
+  });
+
+  it("should throw error when payload did not meet data type specification in comments", () => {
+    // Arrange
+    const payload = {
+      id: "thread-123",
+      title: "sebuah thread",
+      body: "sebuah body thread",
+      date: new Date(),
       username: "dicoding",
       comments: [
         {

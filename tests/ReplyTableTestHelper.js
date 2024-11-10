@@ -1,11 +1,11 @@
 /* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
-const CommentsTableTestHelper = {
-  async addComment({
+const ReplyTableTestHelper = {
+  async addReply({
     id = "reply-123",
     owner = "user-123",
-    comment = "thread-123",
+    comment = "comment-123",
     content = "test aja",
     is_delete = false,
   }) {
@@ -17,7 +17,7 @@ const CommentsTableTestHelper = {
     await pool.query(query);
   },
 
-  async findCommentsById(id) {
+  async findRepliesById(id) {
     const query = {
       text: 'SELECT * FROM replies WHERE id = $1',
       values: [id],
@@ -32,4 +32,4 @@ const CommentsTableTestHelper = {
   },
 };
 
-module.exports = CommentsTableTestHelper;
+module.exports = ReplyTableTestHelper;

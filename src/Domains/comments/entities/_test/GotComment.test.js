@@ -43,6 +43,50 @@ describe("a GotComment entities", () => {
     );
   });
 
+  it("should throw error when payload did not contain needed property in replies", () => {
+    // Arrange
+    const payload = {
+      id: "thread-123",
+      title: "sebuah thread",
+      body: "sebuah body thread",
+      date: new Date(),
+      username: "dicoding",
+      comments: [
+        {
+          id: "comment-q_0uToswNf6i24RDYZJI3",
+          username: "johndoe",
+          date: new Date(),
+          content: "sebuah comment",
+          replies: [
+            {
+              id: 1,
+              content: "**balasan telah dihapus**",
+              date: "2021-08-08T07:59:48.766Z"
+            },
+          ],
+        },
+        {
+          id: "comment-q_0uToswNf6i24RDYZJIs",
+          username: "dicoding",
+          date: new Date(),
+          content: "**komentar telah dihapus**",
+          replies: [
+            {
+              id: 1,
+              content: "**balasan telah dihapus**",
+              date: "2021-08-08T07:59:48.766Z"
+            }
+          ],
+        },
+      ],
+    };
+
+    // Action and Assert
+    expect(() => new GotComment(payload)).toThrow(
+      "GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    );
+  });
+
   it("should throw error when payload did not meet data type specification", () => {
     // Arrange
     const payload = {
@@ -87,12 +131,60 @@ describe("a GotComment entities", () => {
           username: "johndoe",
           date: "2021-08-08T07:22:33.555Z",
           content: "sebuah comment",
+          replies: [],
         },
         {
           id: 2,
           username: "dicoding",
           date: "2021-08-08T07:26:21.338Z",
           content: "**komentar telah dihapus**",
+          replies: [],
+        },
+      ],
+    };
+
+    // Action and Assert
+    expect(() => new GotComment(payload)).toThrow(
+      "GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    );
+  });
+
+  it("should throw error when payload did not meet data type specification in replies", () => {
+    // Arrange
+    const payload = {
+      id: "thread-123",
+      title: "sebuah thread",
+      body: "sebuah body thread",
+      date: new Date(),
+      username: "dicoding",
+      comments: [
+        {
+          id: "comment-q_0uToswNf6i24RDYZJI3",
+          username: "johndoe",
+          date: new Date(),
+          content: "sebuah comment",
+          replies: [
+            {
+              id: 1,
+              content: "**balasan telah dihapus**",
+              date: "2021-08-08T07:59:48.766Z",
+              username: "johndoe",
+            },
+          ],
+        },
+        {
+          id: "comment-q_0uToswNf6i24RDYZJIs",
+          username: "dicoding",
+          date: new Date(),
+          content: "**komentar telah dihapus**",
+          replies: [
+            {
+              id: 1,
+              content: "**balasan telah dihapus**",
+              date: "2021-08-08T07:59:48.766Z",
+              username: "johndoe",
+            }
+          ],
         },
       ],
     };
@@ -117,12 +209,14 @@ describe("a GotComment entities", () => {
           username: "johndoe",
           date: new Date(),
           content: "sebuah comment",
+          replies: [],
         },
         {
           id: "comment-yksuCoxM2s4MMrZJO-qVD",
           username: "dicoding",
           date: new Date(),
           content: "**komentar telah dihapus**",
+          replies: [],
         },
       ],
     };

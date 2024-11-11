@@ -80,23 +80,65 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getComment(getComment) {
     const queryThread = {
-      text: 'SELECT "threads"."id", "threads"."title", "threads"."body", "threads"."date", "users"."username" FROM "threads" INNER JOIN "users" ON "threads"."owner" = "users"."id" WHERE "threads"."id" = $1',
+      text: `SELECT 
+        "threads"."id", 
+        "threads"."title", 
+        "threads"."body", 
+        "threads"."date", 
+        "users"."username" 
+      FROM "threads" 
+      INNER JOIN "users" 
+      ON "threads"."owner" = "users"."id" 
+      WHERE "threads"."id" = $1`,
       values: [getComment.thread],
     };
 
     const resultThread = await this._pool.query(queryThread);
 
     const queryComments = {
-      text: 'SELECT "comments"."id", "users"."username", "comments"."date", "comments"."content", "comments"."is_delete" FROM comments INNER JOIN "users" ON "comments"."owner" = "users"."id" WHERE "comments"."thread" = $1 ORDER BY "date" asc',
+      text: `
+      SELECT 
+        "comments"."id", 
+        "users"."username", 
+        "comments"."date", 
+        CASE 
+          WHEN "comments"."is_delete" THEN '**komentar telah dihapus**' 
+          ELSE "comments"."content" 
+        END AS "content"
+      FROM comments 
+      INNER JOIN "users" 
+      ON "comments"."owner" = "users"."id" 
+      WHERE "comments"."thread" = $1 
+      ORDER BY "date" asc
+      `,
       values: [getComment.thread],
     };
 
     const resultComment = await this._pool.query(queryComments);
 
     for (let i = 0; i < resultComment.rows.length; i++) {
-      if (resultComment.rows[i].is_delete) {
-        resultComment.rows[i].content = "**komentar telah dihapus**";
-      }
+      const queryReplies = {
+        text: `
+        SELECT 
+          "replies"."id", 
+          "users"."username", 
+          "replies"."date", 
+          CASE 
+            WHEN "replies"."is_delete" THEN '**balasan telah dihapus**' 
+            ELSE "replies"."content" 
+          END AS "content"
+        FROM replies 
+        INNER JOIN "users" 
+        ON "replies"."owner" = "users"."id" 
+        WHERE "replies"."comment" = $1 
+        ORDER BY "date" asc
+        `,
+        values: [resultComment.rows[i].id],
+      };
+
+      const resultReplies = await this._pool.query(queryReplies);
+
+      resultComment.rows[i].replies = resultReplies.rows
     }
 
     resultThread.rows[0].comments = resultComment.rows;

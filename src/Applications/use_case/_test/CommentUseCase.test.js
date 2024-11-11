@@ -111,12 +111,14 @@ describe("CommentUseCase", () => {
           username: "johndoe",
           date: new Date(),
           content: "sebuah comment",
+          replies: []
         },
         {
           id: "comment-yksuCoxM2s4MMrZJO-qVD",
           username: "dicoding",
           date: new Date(),
           content: "**komentar telah dihapus**",
+          replies: []
         },
       ],
     });

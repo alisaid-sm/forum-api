@@ -35,10 +35,17 @@ class GotComment {
       cleanComment.username = comments[i].username;
       cleanComment.date = comments[i].date;
       cleanComment.content = comments[i].content;
+      cleanComment.replies = comments[i].replies;
 
       comments[i] = cleanComment;
 
-      if (!comments[i].id || !comments[i].username || !comments[i].date || !comments[i].content) {
+      if (
+        !comments[i].id ||
+        !comments[i].username ||
+        !comments[i].date ||
+        !comments[i].content ||
+        !comments[i].replies
+      ) {
         throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
       }
 
@@ -46,9 +53,39 @@ class GotComment {
         typeof comments[i].id !== "string" ||
         typeof comments[i].username !== "string" ||
         typeof comments[i].date !== "object" ||
-        typeof comments[i].content !== "string"
+        typeof comments[i].content !== "string" ||
+        typeof comments[i].replies !== "object"
       ) {
         throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+      }
+
+      for (let j = 0; j < comments[i].replies.length; j++) {
+        const cleanReply = {};
+
+        cleanReply.id = comments[i].replies[j].id;
+        cleanReply.username = comments[i].replies[j].username;
+        cleanReply.date = comments[i].replies[j].date;
+        cleanReply.content = comments[i].replies[j].content;
+
+        comments[i].replies[j] = cleanReply;
+
+        if (
+          !comments[i].replies[j].id ||
+          !comments[i].replies[j].username ||
+          !comments[i].replies[j].date ||
+          !comments[i].replies[j].content
+        ) {
+          throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
+        }
+
+        if (
+          typeof comments[i].replies[j].id !== "string" ||
+          typeof comments[i].replies[j].username !== "string" ||
+          typeof comments[i].replies[j].date !== "object" ||
+          typeof comments[i].replies[j].content !== "string"
+        ) {
+          throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+        }
       }
     }
   }

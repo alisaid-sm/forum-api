@@ -1,4 +1,5 @@
 const CommentsTableTestHelper = require("../../../../tests/CommentTableTestHelper");
+const ReplyTableTestHelper = require("../../../../tests/ReplyTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
 const AddComment = require("../../../Domains/comments/entities/AddComment");
@@ -163,6 +164,62 @@ describe("CommentRepositoryPostgres", () => {
               username: "dicoding",
               date: gotComment.comments[0].date,
               content: "test aja",
+              replies: [],
+            },
+          ],
+        })
+      );
+    });
+    it("should success get comment with reply and return got comment with reply correctly", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+      });
+
+      // Arrange
+      const getComment = new GetComment({
+        thread: "thread-123",
+      });
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const gotComment = await commentRepositoryPostgres.getComment(getComment);
+
+      // Assert
+      expect(gotComment.comments).toHaveLength(1);
+      expect(gotComment).toStrictEqual(
+        new GotComment({
+          id: "thread-123",
+          title: "test",
+          body: "test aja",
+          date: gotComment.date,
+          username: "dicoding",
+          comments: [
+            {
+              id: "comment-123",
+              username: "dicoding",
+              date: gotComment.comments[0].date,
+              content: "test aja",
+              replies: [
+                {
+                  id: "reply-123",
+                  username: "dicoding",
+                  date: gotComment.comments[0].replies[0].date,
+                  content: "test aja",
+                },
+              ],
             },
           ],
         })
@@ -177,7 +234,7 @@ describe("CommentRepositoryPostgres", () => {
       });
       await CommentsTableTestHelper.addComment({
         id: "comment-123",
-        is_delete: true
+        is_delete: true,
       });
 
       // Arrange
@@ -208,6 +265,63 @@ describe("CommentRepositoryPostgres", () => {
               username: "dicoding",
               date: gotComment.comments[0].date,
               content: "**komentar telah dihapus**",
+              replies: [],
+            },
+          ],
+        })
+      );
+    });
+    it("should success get comment with reply with deleted reply and return got comment correctly", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+        is_delete: true
+      });
+
+      // Arrange
+      const getComment = new GetComment({
+        thread: "thread-123",
+      });
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const gotComment = await commentRepositoryPostgres.getComment(getComment);
+
+      // Assert
+      expect(gotComment.comments).toHaveLength(1);
+      expect(gotComment).toStrictEqual(
+        new GotComment({
+          id: "thread-123",
+          title: "test",
+          body: "test aja",
+          date: gotComment.date,
+          username: "dicoding",
+          comments: [
+            {
+              id: "comment-123",
+              username: "dicoding",
+              date: gotComment.comments[0].date,
+              content: "test aja",
+              replies: [
+                {
+                  id: "reply-123",
+                  username: "dicoding",
+                  date: gotComment.comments[0].replies[0].date,
+                  content: "**balasan telah dihapus**",
+                },
+              ],
             },
           ],
         })

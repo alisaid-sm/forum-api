@@ -1,4 +1,4 @@
-class GotComment {
+class GotThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -14,7 +14,7 @@ class GotComment {
 
   _verifyPayload({ id, title, body, date, username, comments }) {
     if (!id || !title || !body || !date || !username || !comments) {
-      throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
+      throw new Error("GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
     }
 
     if (
@@ -25,7 +25,7 @@ class GotComment {
       typeof username !== "string" ||
       typeof comments !== "object"
     ) {
-      throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+      throw new Error("GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
 
     for (let i = 0; i < comments.length; i++) {
@@ -46,7 +46,7 @@ class GotComment {
         !comments[i].content ||
         !comments[i].replies
       ) {
-        throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
+        throw new Error("GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
       }
 
       if (
@@ -56,7 +56,7 @@ class GotComment {
         typeof comments[i].content !== "string" ||
         typeof comments[i].replies !== "object"
       ) {
-        throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+        throw new Error("GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
       }
 
       for (let j = 0; j < comments[i].replies.length; j++) {
@@ -75,7 +75,7 @@ class GotComment {
           !comments[i].replies[j].date ||
           !comments[i].replies[j].content
         ) {
-          throw new Error("GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
+          throw new Error("GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
         }
 
         if (
@@ -84,11 +84,11 @@ class GotComment {
           typeof comments[i].replies[j].date !== "object" ||
           typeof comments[i].replies[j].content !== "string"
         ) {
-          throw new Error("GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+          throw new Error("GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
         }
       }
     }
   }
 }
 
-module.exports = GotComment;
+module.exports = GotThread;

@@ -1,7 +1,9 @@
+const CommentRepository = require("../../../Domains/comments/CommentRepository");
 const AddedReply = require("../../../Domains/replies/entities/AddedReply");
 const AddReply = require("../../../Domains/replies/entities/AddReply");
 const DeleteReply = require("../../../Domains/replies/entities/DeleteReply");
 const ReplyRepository = require("../../../Domains/replies/ReplyRepository");
+const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
 const ReplyUseCase = require("../ReplyUseCase");
 
 describe("ReplyUseCase", () => {
@@ -29,17 +31,23 @@ describe("ReplyUseCase", () => {
       .fn()
       .mockImplementation(() => Promise.resolve(mockAddedReply));
 
-    mockReplyRepository.verifyAvailableThread = jest
+    const mockThreadRepository = new ThreadRepository();
+
+    mockThreadRepository.verifyAvailableThread = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
 
-    mockReplyRepository.verifyAvailableComment = jest
+    const mockCommentRepository = new CommentRepository();
+
+    mockCommentRepository.verifyAvailableComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const replyUseCase = new ReplyUseCase({
       replyRepository: mockReplyRepository,
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
     });
 
     // Action
@@ -55,6 +63,12 @@ describe("ReplyUseCase", () => {
     );
     expect(mockReplyRepository.addReply).toHaveBeenCalledWith(
       new AddReply(useCasePayload)
+    );
+    expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(
+      useCasePayload.thread
+    );
+    expect(mockCommentRepository.verifyAvailableComment).toHaveBeenCalledWith(
+      useCasePayload.comment
     );
   });
   it("should orchestrating the delete reply action correctly", async () => {
@@ -75,22 +89,27 @@ describe("ReplyUseCase", () => {
     mockReplyRepository.verifyReplyOwner = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
-
-    mockReplyRepository.verifyAvailableThread = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
-
-    mockReplyRepository.verifyAvailableComment = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve());
-
     mockReplyRepository.verifyAvailableReply = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+
+    const mockThreadRepository = new ThreadRepository();
+
+    mockThreadRepository.verifyAvailableThread = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve());
+
+    const mockCommentRepository = new CommentRepository();
+
+    mockCommentRepository.verifyAvailableComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve());
 
     /** creating use case instance */
     const replyUseCase = new ReplyUseCase({
       replyRepository: mockReplyRepository,
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository
     });
 
     // Action
@@ -99,6 +118,15 @@ describe("ReplyUseCase", () => {
     // Assert
     expect(mockReplyRepository.deleteReply).toHaveBeenCalledWith(
       new DeleteReply(useCasePayload)
+    );
+    expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(
+      useCasePayload.thread
+    );
+    expect(mockCommentRepository.verifyAvailableComment).toHaveBeenCalledWith(
+      useCasePayload.comment
+    );
+    expect(mockReplyRepository.verifyAvailableReply).toHaveBeenCalledWith(
+      useCasePayload.reply
     );
   });
 });

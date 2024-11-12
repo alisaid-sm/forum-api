@@ -1,13 +1,13 @@
-const GetComment = require("../GetComment");
+const GetThread = require("../GetThread");
 
-describe("a GetComment entities", () => {
+describe("a GetThread entities", () => {
   it("should throw error when payload did not contain needed property", () => {
     // Arrange
     const payload = {};
 
     // Action and Assert
-    expect(() => new GetComment(payload)).toThrow(
-      "GET_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    expect(() => new GetThread(payload)).toThrow(
+      "GET_THREAD.NOT_CONTAIN_NEEDED_PROPERTY"
     );
   });
 
@@ -18,19 +18,19 @@ describe("a GetComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GetComment(payload)).toThrow(
-      "GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    expect(() => new GetThread(payload)).toThrow(
+      "GET_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
     );
   });
 
-  it("should create getComment object correctly", () => {
+  it("should create getThread object correctly", () => {
     // Arrange
     const payload = {
       thread: "thread-1"
     };
 
     // Action
-    const { thread } = new GetComment(payload);
+    const { thread } = new GetThread(payload);
 
     // Assert
     expect(thread).toEqual(payload.thread);

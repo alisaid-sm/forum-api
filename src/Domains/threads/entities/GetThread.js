@@ -1,4 +1,4 @@
-class GetComment {
+class GetThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -9,13 +9,13 @@ class GetComment {
 
   _verifyPayload({ thread }) {
     if (!thread) {
-      throw new Error("GET_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY");
+      throw new Error("GET_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
     }
 
     if (typeof thread !== "string") {
-      throw new Error("GET_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION");
+      throw new Error("GET_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
   }
 }
 
-module.exports = GetComment;
+module.exports = GetThread;

@@ -8,13 +8,10 @@ class ReplyRepository {
   async verifyAvailableReply(reply) {
     throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
-  async verifyAvailableComment(comment) {
-    throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
-  }
-  async verifyAvailableThread(thread) {
-    throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
-  }
   async verifyReplyOwner(reply) {
+    throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
+  }
+  async getReplyByThread(thread) {
     throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

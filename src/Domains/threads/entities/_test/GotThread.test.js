@@ -1,7 +1,6 @@
-const AddedComment = require("../AddedComment");
-const GotComment = require("../GotComment");
+const GotThread = require("../GotThread");
 
-describe("a GotComment entities", () => {
+describe("a GotThread entities", () => {
   it("should throw error when payload did not contain needed property", () => {
     // Arrange
     const payload = {
@@ -10,8 +9,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY"
     );
   });
 
@@ -38,8 +37,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY"
     );
   });
 
@@ -82,8 +81,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY"
     );
   });
 
@@ -112,8 +111,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
     );
   });
 
@@ -144,8 +143,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
     );
   });
 
@@ -190,8 +189,8 @@ describe("a GotComment entities", () => {
     };
 
     // Action and Assert
-    expect(() => new GotComment(payload)).toThrow(
-      "GOT_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION"
+    expect(() => new GotThread(payload)).toThrow(
+      "GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION"
     );
   });
 
@@ -222,14 +221,14 @@ describe("a GotComment entities", () => {
     };
 
     // Action
-    const gotComment = new GotComment(payload);
+    const gotThread = new GotThread(payload);
 
     // Assert
-    expect(gotComment.id).toEqual(payload.id);
-    expect(gotComment.title).toEqual(payload.title);
-    expect(gotComment.body).toEqual(payload.body);
-    expect(gotComment.date).toEqual(payload.date);
-    expect(gotComment.username).toEqual(payload.username);
-    expect(gotComment.comments).toEqual(payload.comments);
+    expect(gotThread.id).toEqual(payload.id);
+    expect(gotThread.title).toEqual(payload.title);
+    expect(gotThread.body).toEqual(payload.body);
+    expect(gotThread.date).toEqual(payload.date);
+    expect(gotThread.username).toEqual(payload.username);
+    expect(gotThread.comments).toEqual(payload.comments);
   });
 });

@@ -2,6 +2,8 @@ const CommentsTableTestHelper = require("../../../../tests/CommentTableTestHelpe
 const ReplyTableTestHelper = require("../../../../tests/ReplyTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
+const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 const AddedReply = require("../../../Domains/replies/entities/AddedReply");
 const AddReply = require("../../../Domains/replies/entities/AddReply");
 const DeleteReply = require("../../../Domains/replies/entities/DeleteReply");
@@ -132,6 +134,134 @@ describe("ReplyRepositoryPostgres", () => {
       );
       expect(replies).toHaveLength(1);
       expect(replies[0].is_delete).toEqual(true);
+    });
+  });
+
+  describe("verifyAvailableReply function", () => {
+    it("should resolves reply found", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+      });
+
+      // Arrange
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Assert
+      await expect(
+        replyRepositoryPostgres.verifyAvailableReply("reply-123")
+      ).resolves.toBeUndefined();
+    });
+    it("should error 404 reply not found", async () => {
+      // Arrange
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Assert
+      await expect(
+        replyRepositoryPostgres.verifyAvailableReply("reply-123")
+      ).rejects.toThrow(new NotFoundError("reply tidak ditemukan"));
+    });
+  });
+
+  describe("verifyReplyOwner function", () => {
+    it("should resolves user has reply", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+      });
+
+      // Arrange
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Assert
+      await expect(
+        replyRepositoryPostgres.verifyReplyOwner("user-123", "reply-123")
+      ).resolves.toBeUndefined();
+    });
+    it("should error 403 user is not authorized", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+      });
+
+      // Arrange
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Assert
+      await expect(
+        replyRepositoryPostgres.verifyReplyOwner("user-1233", "reply-123")
+      ).rejects.toThrow(new AuthorizationError(
+        "Hanya pemilik balasan yang dapat menghapus balasan"
+      ));
+    });
+  });
+
+  describe("getRepliesByComment function", () => {
+    it("should success getRepliesByComment", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
+      });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+      await ReplyTableTestHelper.addReply({
+        id: "reply-123",
+      });
+
+      const fakeIdGenerator = () => "123"; // stub!
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Action
+      const replies = await replyRepositoryPostgres.getRepliesByComment("comment-123");
+
+      // Assert
+      expect(replies).toHaveLength(1);
     });
   });
 });

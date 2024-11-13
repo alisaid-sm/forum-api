@@ -6,7 +6,6 @@ class CommentsHandler {
 
     this.postCommentHandler = this.postCommentHandler.bind(this);
     this.deleteCommentHandler = this.deleteCommentHandler.bind(this);
-    this.getCommentHandler = this.getCommentHandler.bind(this);
   }
 
   async postCommentHandler(request, h) {
@@ -46,27 +45,6 @@ class CommentsHandler {
 
     const response = h.response({
       status: 'success',
-    });
-    response.code(200);
-    return response;
-  }
-
-  async getCommentHandler(request, h) {
-    const { threadId } = request.params;
-
-    request.payload = {};
-
-    request.payload.thread = threadId;
-
-    const commentUseCase = this._container.getInstance(CommentUseCase.name);
-
-    const thread = await commentUseCase.getComment(request.payload);
-
-    const response = h.response({
-      status: 'success',
-      data: {
-        thread,
-      },
     });
     response.code(200);
     return response;

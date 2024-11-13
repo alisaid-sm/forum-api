@@ -2,11 +2,11 @@ const CommentsTableTestHelper = require("../../../../tests/CommentTableTestHelpe
 const ReplyTableTestHelper = require("../../../../tests/ReplyTableTestHelper");
 const ThreadsTableTestHelper = require("../../../../tests/ThreadTableTestHelper");
 const UsersTableTestHelper = require("../../../../tests/UsersTableTestHelper");
+const AuthorizationError = require("../../../Commons/exceptions/AuthorizationError");
+const NotFoundError = require("../../../Commons/exceptions/NotFoundError");
 const AddComment = require("../../../Domains/comments/entities/AddComment");
 const AddedComment = require("../../../Domains/comments/entities/AddedComment");
 const DeleteComment = require("../../../Domains/comments/entities/DeleteComment");
-const GetComment = require("../../../Domains/comments/entities/GetComment");
-const GotComment = require("../../../Domains/comments/entities/GotComment");
 const pool = require("../../database/postgres/pool");
 const CommentRepositoryPostgres = require("../CommentRepositoryPostgres");
 
@@ -124,8 +124,8 @@ describe("CommentRepositoryPostgres", () => {
     });
   });
 
-  describe("getComment function", () => {
-    it("should success get comment and return got comment correctly", async () => {
+  describe("verifyAvailableComment function", () => {
+    it("should resolves comment found", async () => {
       await UsersTableTestHelper.addUser({ username: "dicoding" });
       await ThreadsTableTestHelper.addThread({
         owner: "user-123",
@@ -137,95 +137,34 @@ describe("CommentRepositoryPostgres", () => {
       });
 
       // Arrange
-      const getComment = new GetComment({
-        thread: "thread-123",
-      });
       const fakeIdGenerator = () => "123"; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
         fakeIdGenerator
       );
 
-      // Action
-      const gotComment = await commentRepositoryPostgres.getComment(getComment);
-
       // Assert
-      expect(gotComment.comments).toHaveLength(1);
-      expect(gotComment).toStrictEqual(
-        new GotComment({
-          id: "thread-123",
-          title: "test",
-          body: "test aja",
-          date: gotComment.date,
-          username: "dicoding",
-          comments: [
-            {
-              id: "comment-123",
-              username: "dicoding",
-              date: gotComment.comments[0].date,
-              content: "test aja",
-              replies: [],
-            },
-          ],
-        })
-      );
+      await expect(
+        commentRepositoryPostgres.verifyAvailableComment("comment-123")
+      ).resolves.toBeUndefined();
     });
-    it("should success get comment with reply and return got comment with reply correctly", async () => {
-      await UsersTableTestHelper.addUser({ username: "dicoding" });
-      await ThreadsTableTestHelper.addThread({
-        owner: "user-123",
-        title: "test",
-        body: "test aja",
-      });
-      await CommentsTableTestHelper.addComment({
-        id: "comment-123",
-      });
-      await ReplyTableTestHelper.addReply({
-        id: "reply-123",
-      });
-
+    it("should error 404 comment not found", async () => {
       // Arrange
-      const getComment = new GetComment({
-        thread: "thread-123",
-      });
       const fakeIdGenerator = () => "123"; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
         fakeIdGenerator
       );
 
-      // Action
-      const gotComment = await commentRepositoryPostgres.getComment(getComment);
-
       // Assert
-      expect(gotComment.comments).toHaveLength(1);
-      expect(gotComment).toStrictEqual(
-        new GotComment({
-          id: "thread-123",
-          title: "test",
-          body: "test aja",
-          date: gotComment.date,
-          username: "dicoding",
-          comments: [
-            {
-              id: "comment-123",
-              username: "dicoding",
-              date: gotComment.comments[0].date,
-              content: "test aja",
-              replies: [
-                {
-                  id: "reply-123",
-                  username: "dicoding",
-                  date: gotComment.comments[0].replies[0].date,
-                  content: "test aja",
-                },
-              ],
-            },
-          ],
-        })
-      );
+      await expect(
+        commentRepositoryPostgres.verifyAvailableComment("comment-123")
+      ).rejects.toThrow(new NotFoundError("comment tidak ditemukan"));
     });
-    it("should success get comment with deleted comment and return got comment correctly", async () => {
+  });
+
+  describe("verifyCommentOwner function", () => {
+    it("should resolves user has comment", async () => {
       await UsersTableTestHelper.addUser({ username: "dicoding" });
       await ThreadsTableTestHelper.addThread({
         owner: "user-123",
@@ -234,44 +173,21 @@ describe("CommentRepositoryPostgres", () => {
       });
       await CommentsTableTestHelper.addComment({
         id: "comment-123",
-        is_delete: true,
       });
 
       // Arrange
-      const getComment = new GetComment({
-        thread: "thread-123",
-      });
       const fakeIdGenerator = () => "123"; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
         fakeIdGenerator
       );
 
-      // Action
-      const gotComment = await commentRepositoryPostgres.getComment(getComment);
-
       // Assert
-      expect(gotComment.comments).toHaveLength(1);
-      expect(gotComment).toStrictEqual(
-        new GotComment({
-          id: "thread-123",
-          title: "test",
-          body: "test aja",
-          date: gotComment.date,
-          username: "dicoding",
-          comments: [
-            {
-              id: "comment-123",
-              username: "dicoding",
-              date: gotComment.comments[0].date,
-              content: "**komentar telah dihapus**",
-              replies: [],
-            },
-          ],
-        })
-      );
+      await expect(
+        commentRepositoryPostgres.verifyCommentOwner("user-123", "comment-123")
+      ).resolves.toBeUndefined();
     });
-    it("should success get comment with reply with deleted reply and return got comment correctly", async () => {
+    it("should error 403 user is not authorized", async () => {
       await UsersTableTestHelper.addUser({ username: "dicoding" });
       await ThreadsTableTestHelper.addThread({
         owner: "user-123",
@@ -281,15 +197,35 @@ describe("CommentRepositoryPostgres", () => {
       await CommentsTableTestHelper.addComment({
         id: "comment-123",
       });
-      await ReplyTableTestHelper.addReply({
-        id: "reply-123",
-        is_delete: true
-      });
 
       // Arrange
-      const getComment = new GetComment({
-        thread: "thread-123",
+      const fakeIdGenerator = () => "123"; // stub!
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(
+        pool,
+        fakeIdGenerator
+      );
+
+      // Assert
+      await expect(
+        commentRepositoryPostgres.verifyCommentOwner("user-1233", "comment-123")
+      ).rejects.toThrow(new AuthorizationError(
+        "Hanya pemilik komentar yang dapat menghapus komentar"
+      ));
+    });
+  });
+
+  describe("getCommentsByThread function", () => {
+    it("should success getCommentsByThread", async () => {
+      await UsersTableTestHelper.addUser({ username: "dicoding" });
+      await ThreadsTableTestHelper.addThread({
+        owner: "user-123",
+        title: "test",
+        body: "test aja",
       });
+      await CommentsTableTestHelper.addComment({
+        id: "comment-123",
+      });
+
       const fakeIdGenerator = () => "123"; // stub!
       const commentRepositoryPostgres = new CommentRepositoryPostgres(
         pool,
@@ -297,35 +233,10 @@ describe("CommentRepositoryPostgres", () => {
       );
 
       // Action
-      const gotComment = await commentRepositoryPostgres.getComment(getComment);
+      const comments = await commentRepositoryPostgres.getCommentsByThread("thread-123");
 
       // Assert
-      expect(gotComment.comments).toHaveLength(1);
-      expect(gotComment).toStrictEqual(
-        new GotComment({
-          id: "thread-123",
-          title: "test",
-          body: "test aja",
-          date: gotComment.date,
-          username: "dicoding",
-          comments: [
-            {
-              id: "comment-123",
-              username: "dicoding",
-              date: gotComment.comments[0].date,
-              content: "test aja",
-              replies: [
-                {
-                  id: "reply-123",
-                  username: "dicoding",
-                  date: gotComment.comments[0].replies[0].date,
-                  content: "**balasan telah dihapus**",
-                },
-              ],
-            },
-          ],
-        })
-      );
+      expect(comments).toHaveLength(1);
     });
   });
 });

@@ -22,7 +22,7 @@ describe('CommentRepository interface', () => {
     const commentRepository = new CommentRepository();
 
     // Action and Assert
-    await expect(commentRepository.getCommentByThread({})).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentRepository.getCommentsByThread({})).rejects.toThrow('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 
   it('should throw error when invoke abstract behavior verifyAvailableComment', async () => {

@@ -12,7 +12,7 @@ class GetThreadUseCase {
     const getThread = new GetThread(useCasePayload);
     await this._threadRepository.verifyAvailableThread(getThread.thread);
     const thread = await this._threadRepository.getThread(getThread.thread);
-    const comments = await this._commentRepository.getCommentByThread(
+    const comments = await this._commentRepository.getCommentsByThread(
       getThread.thread
     );
 
@@ -23,8 +23,8 @@ class GetThreadUseCase {
 
       delete comments[i].is_delete;
 
-      comments[i].replies = await this._replyRepository.getReplyByThread(
-        getThread.thread
+      comments[i].replies = await this._replyRepository.getRepliesByComment(
+        comments[i].id
       );
 
       for (let j = 0; j < comments[i].replies.length; j++) {

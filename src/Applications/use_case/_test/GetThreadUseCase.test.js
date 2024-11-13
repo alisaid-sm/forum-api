@@ -42,6 +42,14 @@ describe("GetThreadUseCase", () => {
         username: "johndoe",
         date: new Date(),
         content: "sebuah reply",
+        is_delete: false
+      },
+      {
+        id: "reply-_pby2_tmXV6bcvcdev8xk",
+        username: "johndoe",
+        date: new Date(),
+        content: "**balasan telah dihapus**",
+        is_delete: true
       },
     ];
 
@@ -57,13 +65,13 @@ describe("GetThreadUseCase", () => {
 
     const mockCommentRepository = new CommentRepository();
 
-    mockCommentRepository.getCommentByThread = jest
+    mockCommentRepository.getCommentsByThread = jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockGotComments));
 
     const mockReplyRepository = new ReplyRepository();
 
-    mockReplyRepository.getReplyByThread = jest
+    mockReplyRepository.getRepliesByComment = jest
       .fn()
       .mockImplementation(() => Promise.resolve(mockGotReplies));
 
@@ -97,6 +105,12 @@ describe("GetThreadUseCase", () => {
                     username: "johndoe",
                     date: gotThread.comments[0].replies[0].date,
                     content: "sebuah reply",
+                },
+                {
+                    id: "reply-_pby2_tmXV6bcvcdev8xk",
+                    username: "johndoe",
+                    date: gotThread.comments[1].replies[1].date,
+                    content: "**balasan telah dihapus**",
                 }
             ]
           },
@@ -111,6 +125,12 @@ describe("GetThreadUseCase", () => {
                     username: "johndoe",
                     date: gotThread.comments[1].replies[0].date,
                     content: "sebuah reply",
+                },
+                {
+                    id: "reply-_pby2_tmXV6bcvcdev8xk",
+                    username: "johndoe",
+                    date: gotThread.comments[1].replies[1].date,
+                    content: "**balasan telah dihapus**",
                 }
             ]
           },
@@ -120,7 +140,8 @@ describe("GetThreadUseCase", () => {
 
     expect(mockThreadRepository.getThread).toHaveBeenCalledWith(useCasePayload.thread);
     expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(useCasePayload.thread);
-    expect(mockCommentRepository.getCommentByThread).toHaveBeenCalledWith(useCasePayload.thread);
-    expect(mockReplyRepository.getReplyByThread).toHaveBeenCalledWith(useCasePayload.thread);
+    expect(mockCommentRepository.getCommentsByThread).toHaveBeenCalledWith(useCasePayload.thread);
+    expect(mockReplyRepository.getRepliesByComment).toHaveBeenCalledWith(mockGotComments[0].id);
+    expect(mockReplyRepository.getRepliesByComment).toHaveBeenCalledWith(mockGotComments[1].id);
   });
 });

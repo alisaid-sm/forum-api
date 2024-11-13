@@ -25,32 +25,6 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     return new AddedReply({ ...result.rows[0] });
   }
 
-  async verifyAvailableThread(threadId) {
-    const query = {
-      text: "SELECT id FROM threads WHERE id = $1",
-      values: [threadId],
-    };
-
-    const result = await this._pool.query(query);
-
-    if (result.rowCount <= 0) {
-      throw new NotFoundError("thread tidak ditemukan");
-    }
-  }
-
-  async verifyAvailableComment(commentId) {
-    const query = {
-      text: "SELECT id FROM comments WHERE id = $1",
-      values: [commentId],
-    };
-
-    const result = await this._pool.query(query);
-
-    if (result.rowCount <= 0) {
-      throw new NotFoundError("comment tidak ditemukan");
-    }
-  }
-
   async verifyAvailableReply(replyId) {
     const query = {
       text: "SELECT id FROM replies WHERE id = $1",
@@ -88,6 +62,29 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const result = await this._pool.query(query);
 
     return result;
+  }
+
+  async getRepliesByComment(commentId) {
+    const query = {
+      text: `
+      SELECT 
+        "replies"."id", 
+        "users"."username", 
+        "replies"."date", 
+        "replies"."content", 
+        "replies"."is_delete"
+      FROM replies 
+      INNER JOIN "users" 
+      ON "replies"."owner" = "users"."id" 
+      WHERE "replies"."comment" = $1 
+      ORDER BY "date" asc
+      `,
+      values: [commentId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
   }
 }
 

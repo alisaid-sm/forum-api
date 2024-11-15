@@ -86,6 +86,9 @@ describe("ThreadRepositoryPostgres", () => {
       await expect(
         threadRepositoryPostgres.verifyAvailableThread("thread-123")
       ).resolves.toBeUndefined();
+      expect(() =>
+        threadRepositoryPostgres.verifyAvailableThread("thread-123")
+      ).not.toThrow(new NotFoundError("thread tidak ditemukan"));
     });
     it("should error thread not found", async () => {
       const fakeIdGenerator = () => "123"; // stub!

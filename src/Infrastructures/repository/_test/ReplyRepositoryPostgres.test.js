@@ -51,9 +51,7 @@ describe("ReplyRepositoryPostgres", () => {
       await replyRepositoryPostgres.addReply(addReply);
 
       // Assert
-      const replies = await ReplyTableTestHelper.findRepliesById(
-        "reply-123"
-      );
+      const replies = await ReplyTableTestHelper.findRepliesById("reply-123");
       expect(replies).toHaveLength(1);
     });
 
@@ -82,9 +80,7 @@ describe("ReplyRepositoryPostgres", () => {
       );
 
       // Action
-      const addedReply = await replyRepositoryPostgres.addReply(
-        addReply
-      );
+      const addedReply = await replyRepositoryPostgres.addReply(addReply);
 
       // Assert
       expect(addedReply).toStrictEqual(
@@ -117,7 +113,7 @@ describe("ReplyRepositoryPostgres", () => {
         owner: "user-123",
         thread: "thread-123",
         comment: "comment-123",
-        reply: "reply-123"
+        reply: "reply-123",
       });
       const fakeIdGenerator = () => "123"; // stub!
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(
@@ -126,12 +122,13 @@ describe("ReplyRepositoryPostgres", () => {
       );
 
       // Action
-      await replyRepositoryPostgres.deleteReply(deleteReply);
+      const deletedReply = await replyRepositoryPostgres.deleteReply(
+        deleteReply
+      );
 
       // Assert
-      const replies = await ReplyTableTestHelper.findRepliesById(
-        "reply-123"
-      );
+      expect(deletedReply.rows[0].id).toBe(deleteReply.reply);
+      const replies = await ReplyTableTestHelper.findRepliesById("reply-123");
       expect(replies).toHaveLength(1);
       expect(replies[0].is_delete).toEqual(true);
     });
@@ -163,6 +160,9 @@ describe("ReplyRepositoryPostgres", () => {
       await expect(
         replyRepositoryPostgres.verifyAvailableReply("reply-123")
       ).resolves.toBeUndefined();
+      expect(() =>
+        replyRepositoryPostgres.verifyAvailableComment("reply-123")
+      ).not.toThrow(new NotFoundError("reply tidak ditemukan"));
     });
     it("should error 404 reply not found", async () => {
       // Arrange
@@ -205,6 +205,13 @@ describe("ReplyRepositoryPostgres", () => {
       await expect(
         replyRepositoryPostgres.verifyReplyOwner("user-123", "reply-123")
       ).resolves.toBeUndefined();
+      expect(() =>
+        replyRepositoryPostgres.verifyReplyOwner("user-123", "reply-123")
+      ).not.toThrow(
+        new AuthorizationError(
+          "Hanya pemilik balasan yang dapat menghapus balasan"
+        )
+      );
     });
     it("should error 403 user is not authorized", async () => {
       await UsersTableTestHelper.addUser({ username: "dicoding" });
@@ -230,9 +237,11 @@ describe("ReplyRepositoryPostgres", () => {
       // Assert
       await expect(
         replyRepositoryPostgres.verifyReplyOwner("user-1233", "reply-123")
-      ).rejects.toThrow(new AuthorizationError(
-        "Hanya pemilik balasan yang dapat menghapus balasan"
-      ));
+      ).rejects.toThrow(
+        new AuthorizationError(
+          "Hanya pemilik balasan yang dapat menghapus balasan"
+        )
+      );
     });
   });
 
@@ -258,7 +267,9 @@ describe("ReplyRepositoryPostgres", () => {
       );
 
       // Action
-      const replies = await replyRepositoryPostgres.getRepliesByComment("comment-123");
+      const replies = await replyRepositoryPostgres.getRepliesByComment(
+        "comment-123"
+      );
 
       // Assert
       expect(replies).toHaveLength(1);

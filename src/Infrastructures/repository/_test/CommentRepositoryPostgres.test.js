@@ -113,9 +113,12 @@ describe("CommentRepositoryPostgres", () => {
       );
 
       // Action
-      await commentRepositoryPostgres.deleteComment(deleteComment);
+      const deletedComment = await commentRepositoryPostgres.deleteComment(
+        deleteComment
+      );
 
       // Assert
+      expect(deletedComment.rows[0].id).toBe(deleteComment.comment);
       const comments = await CommentsTableTestHelper.findCommentsById(
         "comment-123"
       );
@@ -147,6 +150,9 @@ describe("CommentRepositoryPostgres", () => {
       await expect(
         commentRepositoryPostgres.verifyAvailableComment("comment-123")
       ).resolves.toBeUndefined();
+      expect(() =>
+        commentRepositoryPostgres.verifyAvailableComment("comment-123")
+      ).not.toThrow(new NotFoundError("comment tidak ditemukan"));
     });
     it("should error 404 comment not found", async () => {
       // Arrange
@@ -186,6 +192,13 @@ describe("CommentRepositoryPostgres", () => {
       await expect(
         commentRepositoryPostgres.verifyCommentOwner("user-123", "comment-123")
       ).resolves.toBeUndefined();
+      expect(() =>
+        commentRepositoryPostgres.verifyCommentOwner("user-123", "comment-123")
+      ).not.toThrow(
+        new AuthorizationError(
+          "Hanya pemilik komentar yang dapat menghapus komentar"
+        )
+      );
     });
     it("should error 403 user is not authorized", async () => {
       await UsersTableTestHelper.addUser({ username: "dicoding" });
@@ -208,9 +221,11 @@ describe("CommentRepositoryPostgres", () => {
       // Assert
       await expect(
         commentRepositoryPostgres.verifyCommentOwner("user-1233", "comment-123")
-      ).rejects.toThrow(new AuthorizationError(
-        "Hanya pemilik komentar yang dapat menghapus komentar"
-      ));
+      ).rejects.toThrow(
+        new AuthorizationError(
+          "Hanya pemilik komentar yang dapat menghapus komentar"
+        )
+      );
     });
   });
 
@@ -233,7 +248,9 @@ describe("CommentRepositoryPostgres", () => {
       );
 
       // Action
-      const comments = await commentRepositoryPostgres.getCommentsByThread("thread-123");
+      const comments = await commentRepositoryPostgres.getCommentsByThread(
+        "thread-123"
+      );
 
       // Assert
       expect(comments).toHaveLength(1);

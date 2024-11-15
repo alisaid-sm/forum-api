@@ -194,7 +194,7 @@ describe("a GotThread entities", () => {
     );
   });
 
-  it("should create gotComment object correctly", () => {
+  it("should create gotThread object correctly", () => {
     // Arrange
     const payload = {
       id: "thread-123",

@@ -122,12 +122,11 @@ describe("ReplyRepositoryPostgres", () => {
       );
 
       // Action
-      const deletedReply = await replyRepositoryPostgres.deleteReply(
+      await replyRepositoryPostgres.deleteReply(
         deleteReply
       );
 
       // Assert
-      expect(deletedReply.rows[0].id).toBe(deleteReply.reply);
       const replies = await ReplyTableTestHelper.findRepliesById("reply-123");
       expect(replies).toHaveLength(1);
       expect(replies[0].is_delete).toEqual(true);
@@ -273,6 +272,13 @@ describe("ReplyRepositoryPostgres", () => {
 
       // Assert
       expect(replies).toHaveLength(1);
+      expect(replies).toStrictEqual([{
+        id: "reply-123",
+        username: "dicoding",
+        date: replies[0].date,
+        content: "test aja",
+        is_delete: false
+      }]);
     });
   });
 });

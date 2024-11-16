@@ -23,7 +23,7 @@ class ReplyUseCase {
     await this._commentRepository.verifyAvailableComment(deleteReply.comment);
     await this._replyRepository.verifyAvailableReply(deleteReply.reply);
     await this._replyRepository.verifyReplyOwner(deleteReply.owner, deleteReply.reply);
-    return this._replyRepository.deleteReply(deleteReply);
+    await this._replyRepository.deleteReply(deleteReply);
   }
 }
 

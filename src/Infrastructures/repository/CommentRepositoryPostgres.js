@@ -60,9 +60,7 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [deleteComment.comment],
     };
 
-    const result = await this._pool.query(query);
-
-    return result;
+    await this._pool.query(query);
   }
 
   async getCommentsByThread(threadId) {

@@ -113,12 +113,11 @@ describe("CommentRepositoryPostgres", () => {
       );
 
       // Action
-      const deletedComment = await commentRepositoryPostgres.deleteComment(
+      await commentRepositoryPostgres.deleteComment(
         deleteComment
       );
 
       // Assert
-      expect(deletedComment.rows[0].id).toBe(deleteComment.comment);
       const comments = await CommentsTableTestHelper.findCommentsById(
         "comment-123"
       );
@@ -254,6 +253,13 @@ describe("CommentRepositoryPostgres", () => {
 
       // Assert
       expect(comments).toHaveLength(1);
+      expect(comments).toStrictEqual([{
+        id: "comment-123",
+        username: "dicoding",
+        date: comments[0].date,
+        content: "test aja",
+        is_delete: false
+      }]);
     });
   });
 });

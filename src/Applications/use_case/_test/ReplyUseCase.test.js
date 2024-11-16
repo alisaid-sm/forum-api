@@ -84,9 +84,7 @@ describe("ReplyUseCase", () => {
 
     mockReplyRepository.deleteReply = jest
       .fn()
-      .mockImplementation(() => Promise.resolve({
-        rows: [ { id: useCasePayload.reply } ],
-      }));
+      .mockImplementation(() => Promise.resolve());
 
     mockReplyRepository.verifyReplyOwner = jest
       .fn()
@@ -115,10 +113,9 @@ describe("ReplyUseCase", () => {
     });
 
     // Action
-    const deleteReply = await replyUseCase.deleteReply(useCasePayload);
+    await replyUseCase.deleteReply(useCasePayload);
 
     // Assert
-    expect(deleteReply.rows[0].id).toBe(useCasePayload.reply);
     expect(mockReplyRepository.deleteReply).toHaveBeenCalledWith(
       new DeleteReply(useCasePayload)
     );

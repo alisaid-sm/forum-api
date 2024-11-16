@@ -21,7 +21,7 @@ class CommentUseCase {
     await this._threadRepository.verifyAvailableThread(deleteComment.thread);
     await this._commentRepository.verifyAvailableComment(deleteComment.comment);
     await this._commentRepository.verifyCommentOwner(deleteComment.owner, deleteComment.comment);
-    return this._commentRepository.deleteComment(deleteComment);
+    await this._commentRepository.deleteComment(deleteComment);
   }
 }
 

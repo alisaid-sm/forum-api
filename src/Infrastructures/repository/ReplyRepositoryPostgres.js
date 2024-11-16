@@ -59,9 +59,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
       values: [deleteComment.reply],
     };
 
-    const result = await this._pool.query(query);
-
-    return result;
+    await this._pool.query(query);
   }
 
   async getRepliesByComment(commentId) {

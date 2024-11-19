@@ -208,14 +208,28 @@ describe("a GotThread entities", () => {
           username: "johndoe",
           date: new Date(),
           content: "sebuah comment",
-          replies: [],
+          replies: [
+            {
+              id: "reply-123",
+              content: "**balasan telah dihapus**",
+              date: new Date(),
+              username: "johndoe",
+            },
+          ],
         },
         {
           id: "comment-yksuCoxM2s4MMrZJO-qVD",
           username: "dicoding",
           date: new Date(),
           content: "**komentar telah dihapus**",
-          replies: [],
+          replies: [
+            {
+              id: "reply-124",
+              content: "coba balas saja",
+              date: new Date(),
+              username: "johndoe",
+            },
+          ],
         },
       ],
     };

@@ -60,7 +60,7 @@ describe("a GotThread entities", () => {
             {
               id: 1,
               content: "**balasan telah dihapus**",
-              date: "2021-08-08T07:59:48.766Z"
+              date: "2021-08-08T07:59:48.766Z",
             },
           ],
         },
@@ -73,8 +73,8 @@ describe("a GotThread entities", () => {
             {
               id: 1,
               content: "**balasan telah dihapus**",
-              date: "2021-08-08T07:59:48.766Z"
-            }
+              date: "2021-08-08T07:59:48.766Z",
+            },
           ],
         },
       ],
@@ -182,7 +182,7 @@ describe("a GotThread entities", () => {
               content: "**balasan telah dihapus**",
               date: "2021-08-08T07:59:48.766Z",
               username: "johndoe",
-            }
+            },
           ],
         },
       ],
@@ -243,6 +243,9 @@ describe("a GotThread entities", () => {
     expect(gotThread.body).toEqual(payload.body);
     expect(gotThread.date).toEqual(payload.date);
     expect(gotThread.username).toEqual(payload.username);
-    expect(gotThread.comments).toEqual(payload.comments);
+    expect(gotThread.comments).toStrictEqual(payload.comments);
+    expect(gotThread.comments[0].replies).toStrictEqual(
+      payload.comments[0].replies
+    );
   });
 });

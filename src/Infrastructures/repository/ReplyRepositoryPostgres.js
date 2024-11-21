@@ -62,7 +62,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     await this._pool.query(query);
   }
 
-  async getRepliesByComment(commentId) {
+  async getRepliesByComments(commentIds) {
     const query = {
       text: `
       SELECT 
@@ -70,14 +70,15 @@ class ReplyRepositoryPostgres extends ReplyRepository {
         "users"."username", 
         "replies"."date", 
         "replies"."content", 
+        "replies"."comment", 
         "replies"."is_delete"
       FROM replies 
       INNER JOIN "users" 
       ON "replies"."owner" = "users"."id" 
-      WHERE "replies"."comment" = $1 
+      WHERE "replies"."comment" = ANY($1::text[]) 
       ORDER BY "date" asc
       `,
-      values: [commentId],
+      values: [commentIds],
     };
 
     const result = await this._pool.query(query);

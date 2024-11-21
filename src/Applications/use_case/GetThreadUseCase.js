@@ -15,6 +15,9 @@ class GetThreadUseCase {
     const comments = await this._commentRepository.getCommentsByThread(
       getThread.thread
     );
+    const replies = await this._replyRepository.getRepliesByComments(
+      comments.map((value) => value.id)
+    );
 
     for (let i = 0; i < comments.length; i++) {
       if (comments[i].is_delete) {
@@ -23,9 +26,7 @@ class GetThreadUseCase {
 
       delete comments[i].is_delete;
 
-      comments[i].replies = await this._replyRepository.getRepliesByComment(
-        comments[i].id
-      );
+      comments[i].replies = replies.filter((value) => value.comment == comments[i].id);
 
       for (let j = 0; j < comments[i].replies.length; j++) {
         if (comments[i].replies[j].is_delete) {
@@ -33,6 +34,7 @@ class GetThreadUseCase {
         }
 
         delete comments[i].replies[j].is_delete;
+        delete comments[i].replies[j].comment;
       }
     }
 

@@ -266,8 +266,8 @@ describe("ReplyRepositoryPostgres", () => {
       );
 
       // Action
-      const replies = await replyRepositoryPostgres.getRepliesByComment(
-        "comment-123"
+      const replies = await replyRepositoryPostgres.getRepliesByComments(
+        ["comment-123"]
       );
 
       // Assert
@@ -277,6 +277,7 @@ describe("ReplyRepositoryPostgres", () => {
         username: "dicoding",
         date: replies[0].date,
         content: "test aja",
+        comment: "comment-123",
         is_delete: false
       }]);
     });

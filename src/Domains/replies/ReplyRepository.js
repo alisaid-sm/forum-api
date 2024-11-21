@@ -11,7 +11,7 @@ class ReplyRepository {
   async verifyReplyOwner(reply) {
     throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
-  async getRepliesByComment(comment) {
+  async getRepliesByComments(comments) {
     throw new Error("REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED");
   }
 }

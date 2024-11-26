@@ -20,7 +20,7 @@ class AddLikeUseCase {
       await this._likeRepository.addLike(addLike.comment, addLike.owner);
     } else if (like[0].is_delete) {
       await this._likeRepository.restoreLike(addLike.comment, addLike.owner);
-    } else if (!like[0].is_delete) {
+    } else {
       await this._likeRepository.deleteLike(addLike.comment, addLike.owner);
     }
   }

@@ -2,10 +2,11 @@ const GetThread = require("../../Domains/threads/entities/GetThread");
 const GotThread = require("../../Domains/threads/entities/GotThread");
 
 class GetThreadUseCase {
-  constructor({ threadRepository, commentRepository, replyRepository }) {
+  constructor({ threadRepository, commentRepository, replyRepository, likeRepository }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
+    this._likeRepository = likeRepository;
   }
 
   async execute(useCasePayload) {
@@ -15,8 +16,12 @@ class GetThreadUseCase {
     const comments = await this._commentRepository.getCommentsByThread(
       getThread.thread
     );
+    const listOfCommentIds = comments.map((value) => value.id);
     const replies = await this._replyRepository.getRepliesByComments(
-      comments.map((value) => value.id)
+      listOfCommentIds
+    );
+    const likes = await this._likeRepository.getTotalLikesByComments(
+      listOfCommentIds
     );
 
     for (let i = 0; i < comments.length; i++) {
@@ -27,6 +32,7 @@ class GetThreadUseCase {
       delete comments[i].is_delete;
 
       comments[i].replies = replies.filter((value) => value.comment == comments[i].id);
+      comments[i].likeCount = Number(likes.filter((value) => value.comment == comments[i].id)[0]?.count ?? 0);
 
       for (let j = 0; j < comments[i].replies.length; j++) {
         if (comments[i].replies[j].is_delete) {

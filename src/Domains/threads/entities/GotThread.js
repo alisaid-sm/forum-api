@@ -36,6 +36,7 @@ class GotThread {
       cleanComment.date = comments[i].date;
       cleanComment.content = comments[i].content;
       cleanComment.replies = comments[i].replies;
+      cleanComment.likeCount = comments[i].likeCount;
 
       comments[i] = cleanComment;
 
@@ -44,7 +45,9 @@ class GotThread {
         !comments[i].username ||
         !comments[i].date ||
         !comments[i].content ||
-        !comments[i].replies
+        !comments[i].replies ||
+        comments[i].likeCount === null ||
+        comments[i].likeCount === undefined
       ) {
         throw new Error("GOT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY");
       }
@@ -54,7 +57,8 @@ class GotThread {
         typeof comments[i].username !== "string" ||
         typeof comments[i].date !== "object" ||
         typeof comments[i].content !== "string" ||
-        typeof comments[i].replies !== "object"
+        typeof comments[i].replies !== "object" ||
+        typeof comments[i].likeCount !== "number"
       ) {
         throw new Error("GOT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION");
       }

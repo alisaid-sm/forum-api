@@ -63,6 +63,7 @@ describe("a GotThread entities", () => {
               date: "2021-08-08T07:59:48.766Z",
             },
           ],
+          likeCount: 1
         },
         {
           id: "comment-q_0uToswNf6i24RDYZJIs",
@@ -76,6 +77,7 @@ describe("a GotThread entities", () => {
               date: "2021-08-08T07:59:48.766Z",
             },
           ],
+          likeCount: 1
         },
       ],
     };
@@ -131,6 +133,7 @@ describe("a GotThread entities", () => {
           date: "2021-08-08T07:22:33.555Z",
           content: "sebuah comment",
           replies: [],
+          likeCount: 1
         },
         {
           id: 2,
@@ -138,6 +141,7 @@ describe("a GotThread entities", () => {
           date: "2021-08-08T07:26:21.338Z",
           content: "**komentar telah dihapus**",
           replies: [],
+          likeCount: 1
         },
       ],
     };
@@ -170,6 +174,7 @@ describe("a GotThread entities", () => {
               username: "johndoe",
             },
           ],
+          likeCount: 1,
         },
         {
           id: "comment-q_0uToswNf6i24RDYZJIs",
@@ -181,9 +186,10 @@ describe("a GotThread entities", () => {
               id: 1,
               content: "**balasan telah dihapus**",
               date: "2021-08-08T07:59:48.766Z",
-              username: "johndoe",
+              username: "johndoe"
             },
           ],
+          likeCount: 1,
         },
       ],
     };
@@ -216,6 +222,7 @@ describe("a GotThread entities", () => {
               username: "johndoe",
             },
           ],
+          likeCount: 1,
         },
         {
           id: "comment-yksuCoxM2s4MMrZJO-qVD",
@@ -230,6 +237,7 @@ describe("a GotThread entities", () => {
               username: "johndoe",
             },
           ],
+          likeCount: 1,
         },
       ],
     };

@@ -1,4 +1,5 @@
 const CommentRepository = require("../../../Domains/comments/CommentRepository");
+const LikeRepository = require("../../../Domains/likes/LikeRepository");
 const ReplyRepository = require("../../../Domains/replies/ReplyRepository");
 const GotThread = require("../../../Domains/threads/entities/GotThread");
 const ThreadRepository = require("../../../Domains/threads/ThreadRepository");
@@ -55,6 +56,17 @@ describe("GetThreadUseCase", () => {
       },
     ];
 
+    const mockGotLikes = [
+      {
+        comment: "comment-_pby2_tmXV6bcvcdev8xk",
+        count: "1",
+      },
+      {
+        comment: "comment-yksuCoxM2s4MMrZJO-qVD",
+        count: "1",
+      },
+    ];
+
     const mockThreadRepository = new ThreadRepository();
 
     mockThreadRepository.getThread = jest.fn(() =>
@@ -77,11 +89,18 @@ describe("GetThreadUseCase", () => {
       Promise.resolve(mockGotReplies)
     );
 
+    const mockLikeRepository = new LikeRepository();
+
+    mockLikeRepository.getTotalLikesByComments = jest.fn(() =>
+      Promise.resolve(mockGotLikes)
+    );
+
     /** creating use case instance */
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
       replyRepository: mockReplyRepository,
+      likeRepository: mockLikeRepository,
     });
 
     // Action
@@ -109,6 +128,7 @@ describe("GetThreadUseCase", () => {
                 content: "sebuah reply",
               },
             ],
+            likeCount: 1,
           },
           {
             id: "comment-yksuCoxM2s4MMrZJO-qVD",
@@ -123,6 +143,7 @@ describe("GetThreadUseCase", () => {
                 content: "**balasan telah dihapus**",
               },
             ],
+            likeCount: 1,
           },
         ],
       })
@@ -138,6 +159,9 @@ describe("GetThreadUseCase", () => {
       useCasePayload.thread
     );
     expect(mockReplyRepository.getRepliesByComments).toHaveBeenCalledWith(
+      mockGotComments.map(v => v.id)
+    );
+    expect(mockLikeRepository.getTotalLikesByComments).toHaveBeenCalledWith(
       mockGotComments.map(v => v.id)
     );
   });

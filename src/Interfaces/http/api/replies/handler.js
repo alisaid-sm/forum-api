@@ -34,16 +34,16 @@ class RepliesHandler {
     const { id: credentialId } = request.auth.credentials;
     const { threadId, commentId, replyId } = request.params;
 
-    request.payload = {};
-
-    request.payload.owner = credentialId;
-    request.payload.thread = threadId;
-    request.payload.comment = commentId;
-    request.payload.reply = replyId;
+    const payload = {
+      owner: credentialId,
+      thread: threadId,
+      comment: commentId,
+      reply: replyId
+    };
 
     const replyUseCase = this._container.getInstance(ReplyUseCase.name);
 
-    await replyUseCase.deleteReply(request.payload);
+    await replyUseCase.deleteReply(payload);
 
     const response = h.response({
       status: 'success',
